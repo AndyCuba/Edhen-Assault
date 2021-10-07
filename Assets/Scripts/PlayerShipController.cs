@@ -4,32 +4,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class PlayerShip : MonoBehaviour
+public class PlayerShipController : MonoBehaviour
 {
+    [Header("General")]
     [Tooltip("In ms^-1")][SerializeField] float xSpeed = 15f;
     [Tooltip("In ms^-1")][SerializeField] float ySpeed = 15f;
     [Tooltip("In m")][SerializeField] float xRange = 7f;
     [Tooltip("In m")][SerializeField] float yMax = 4f;
     [Tooltip("In m")][SerializeField] float yMin = -4f;
 
+    [Header("Screen position factors")]
     [SerializeField] float positionPitchFactor = -5f;
-    [SerializeField] float controlPitchFactor = -20f;
     [SerializeField] float positionYawFactor = 5f;
+
+    [Header("Control-throw factors")]
+    [SerializeField] float controlPitchFactor = -20f;
     [SerializeField] float controlRollFactor = -20f;
 
     float yThrow, xThrow;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
+    bool isControlEnabled = true;
+
     void Update()
     {
-        ProcessHorizontalMovement();
-        HandleVerticalMovement();
-        ProcessRotation();
+        if (isControlEnabled)
+        {
+            ProcessHorizontalMovement();
+            ProcessVerticalMovement();
+            ProcessRotation();
+        }
+    }
+
+    void OnPlayerDeath() // Called by string reference
+    {
+        print("Dead");
+        isControlEnabled = false;
     }
 
     private void ProcessHorizontalMovement()
@@ -45,7 +54,7 @@ public class PlayerShip : MonoBehaviour
         );
     }
 
-    private void HandleVerticalMovement()
+    private void ProcessVerticalMovement()
     {
         yThrow = CrossPlatformInputManager.GetAxis("Vertical");
         float yOffset = yThrow * ySpeed * Time.deltaTime;
@@ -70,10 +79,5 @@ public class PlayerShip : MonoBehaviour
         float roll = xThrow * controlRollFactor;
 
         transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        print("Dead");
     }
 }
