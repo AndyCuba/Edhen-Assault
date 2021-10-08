@@ -38,7 +38,7 @@ public class PlayerShipController : MonoBehaviour
     void OnPlayerDeath() // Called by string reference
     {
         print("Dead");
-        isControlEnabled = false;
+        // isControlEnabled = false;
     }
 
     private void ProcessHorizontalMovement()
