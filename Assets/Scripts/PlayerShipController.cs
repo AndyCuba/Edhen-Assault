@@ -21,6 +21,8 @@ public class PlayerShipController : MonoBehaviour
     [SerializeField] float controlPitchFactor = -20f;
     [SerializeField] float controlRollFactor = -20f;
 
+    [SerializeField] GameObject[] guns;
+
     float yThrow, xThrow;
 
     bool isControlEnabled = true;
@@ -32,6 +34,7 @@ public class PlayerShipController : MonoBehaviour
             ProcessHorizontalMovement();
             ProcessVerticalMovement();
             ProcessRotation();
+            ProcessFiring();
         }
     }
 
@@ -79,5 +82,32 @@ public class PlayerShipController : MonoBehaviour
         float roll = xThrow * controlRollFactor;
 
         transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
+    }
+
+    private void ProcessFiring()
+    {
+        if (CrossPlatformInputManager.GetButton("Fire"))
+        {
+            ActivateGuns();           
+        } 
+        else
+        {
+            DisactivateGuns();
+        }
+    }
+
+    private void ActivateGuns()
+    {
+        foreach (GameObject gun in guns)
+        {
+            gun.SetActive(true);
+        }
+    }
+    private void DisactivateGuns()
+    {
+        foreach (GameObject gun in guns)
+        {
+            gun.SetActive(false);
+        }
     }
 }
